@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_app/utils/utils.dart';
 import 'package:flutter_firebase_app/widgets/round_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -9,9 +11,36 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  bool isloading = false;
   final form_key = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  void signup() {
+    if (form_key.currentState!.validate()) {
+      setState(() {
+        isloading = true;
+      });
+      _auth
+          .createUserWithEmailAndPassword(
+            email: emailController.text.toString(),
+            password: passwordController.text.toString(),
+          )
+          .then((value) {
+            setState(() {
+              isloading = false;
+            });
+          })
+          .onError((error, stackTrace) {
+            Utils().toastmessage(error.toString());
+            setState(() {
+              isloading = false;
+            });
+          });
+    }
+  }
 
   @override
   void dispose() {
@@ -45,7 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     keyboardType: TextInputType.emailAddress,
                     controller: emailController,
                     validator: (value) {
-                      if(value!.isEmpty){
+                      if (value!.isEmpty) {
                         return 'Enter Email Please';
                       }
                     },
@@ -60,7 +89,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     keyboardType: TextInputType.visiblePassword,
                     controller: passwordController,
                     validator: (value) {
-                      if(value!.isEmpty){
+                      if (value!.isEmpty) {
                         return 'Enter Password Please';
                       }
                     },
@@ -73,21 +102,23 @@ class _SignupScreenState extends State<SignupScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 50,),
-            RoundButton(title: 'Signup', onTap: () {
-              if(form_key.currentState!.validate()){
-
-              };
+            SizedBox(height: 50),
+            RoundButton(title: 'Signup', isloading: isloading, onTap: () {
+              signup();
             }),
-            SizedBox(height: 30,),
+            SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-              Text("Already have an account?"),
-              TextButton(onPressed: (){
-                Navigator.pop(context);
-              }, child: Text('Login'))
-            ],)
+                Text("Already have an account?"),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Login'),
+                ),
+              ],
+            ),
           ],
         ),
       ),

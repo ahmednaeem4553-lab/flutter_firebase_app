@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_app/posts/post_screen.dart';
 import 'package:flutter_firebase_app/ui/auth/signup_screen.dart';
+import 'package:flutter_firebase_app/utils/utils.dart';
 import 'package:flutter_firebase_app/widgets/round_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +13,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  bool isloading = false;
+
+  final _auth = FirebaseAuth.instance;
   final form_key = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -20,6 +27,32 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
+  }
+
+  void login(){
+    if (form_key.currentState!.validate()) {
+                  setState(() {
+                    isloading = true;
+                  });
+                  _auth.signInWithEmailAndPassword(
+                        email: emailController.text.toString(),
+                        password: passwordController.text.toString(), 
+                      )
+                      .then((value) { 
+                        Utils().toastmessage(value.user!.email.toString());
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PostScreen()));
+                        setState(() {
+                          isloading = false;
+                        });
+                      })
+                      .onError((error, stackTrace) {
+                        debugPrint(error.toString());
+                        Utils().toastmessage(error.toString());
+                        setState(() {
+                          isloading = false;
+                        });
+                      });
+                }
   }
 
   @override
@@ -78,8 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
             RoundButton(
               title: 'Login',
               onTap: () {
-                if (form_key.currentState!.validate()) {}
-                ;
+                login();
               },
             ),
             SizedBox(height: 30),
