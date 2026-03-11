@@ -137,7 +137,24 @@ class _PostScreenState extends State<PostScreen> {
 
                     return ListTile(
                       title: Text(title), // what you saved in Firebase
-                      subtitle: Text(id), // post id
+                      subtitle: Text(id),
+                      trailing: PopupMenuButton(
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: ListTile(
+                              leading: Icon(Icons.edit),
+                              trailing: Text('Edit'),
+                            ),
+                          ),
+                          PopupMenuItem(
+                            child: ListTile(
+                              leading: Icon(Icons.delete),
+                              trailing: Text('Delete'),
+                            ),
+                          ),
+                        
+                        ],
+                      ), // post id
                     );
                   },
                 );
