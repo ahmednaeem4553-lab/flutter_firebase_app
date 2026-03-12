@@ -41,6 +41,9 @@ dependencies:
   fluttertoast: ^9.0.0
   country_picker: ^2.0.27
   firebase_database: ^12.1.4
+  firebase_messaging: ^16.1.2
+  flutter_local_notifications: ^21.0.0
+  app_settings: ^7.0.0
 
 dev_dependencies:
   flutter_test:

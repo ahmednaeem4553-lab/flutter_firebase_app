@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_app/firebase_services/notifications_services.dart';
 import 'package:flutter_firebase_app/posts/add_post.dart';
 import 'package:flutter_firebase_app/posts/firestore/add_firestore_data.dart';
 import 'package:flutter_firebase_app/ui/auth/login_screen.dart';
@@ -16,8 +17,17 @@ class FirestorelistScreen extends StatefulWidget {
 
 class _FirestorelistScreenState extends State<FirestorelistScreen> {
 
+  NotificationsServices notificationsServices = NotificationsServices();
+
   // Firebase Auth instance for logout
   final auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    notificationsServices.requestNotificationPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
